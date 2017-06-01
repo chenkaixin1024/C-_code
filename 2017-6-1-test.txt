@@ -1,0 +1,75 @@
+/*************************************************************************
+    > File Name: test6_1.c
+    > Author: chenkaixin
+    > Mail: chenkaixin_1024@sina.com 
+    > Created Time: Tue 30 May 2017 12:12:30 PM PDT
+ ************************************************************************/
+
+#include<stdio.h>
+#include<unistd.h>
+#include<string.h>
+
+int main()
+{
+	int _pipe[2];
+	if(pipe(_pipe)<0)
+	{
+		perror("pipe");
+		return -1;
+	}
+
+	pid_t pid=fork();
+	if(pid==0)
+	{
+//		sleep(1000);
+		close(_pipe[1]);
+
+//		sleep(5);
+		char buf[1024];
+//		memset(buf,0,sizeof(buf));
+		while(1)
+		{
+			read(_pipe[0],buf,sizeof(buf));
+			printf("%s\n",buf);
+			memset(buf,'\0',sizeof(buf));
+		}
+	}
+	else
+	{
+		close(_pipe[0]);
+		char* buf="parent->child:hello child,I'm parent";
+		int i=0;
+		int count=0;
+	//	sleep(100);
+		while(i<5)
+		{
+			i++;
+			write(_pipe[1],buf,strlen(buf)+1);
+//			printf("_pipe count:%d\n",count++);
+//			printf("i=%d\n",i)
+		    sleep(1);
+		}
+//		sleep(1000);
+//		int ret=close(_pipe[1]);
+//		printf("ret=%d\n",ret);
+//		printf("1 closed\n");
+//		sleep(10);
+
+	//	close(_pipe[1]);
+//		waitpid(pid,NULL,0);
+	}
+
+	return 0;  
+}
+
+
+
+
+//int main()
+//{
+//
+//	return 0;
+//}
+
+
+
